@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 2000;
 const secret = process.env.SECRET;
 
 app.use(function (req, res, next) {
@@ -17,10 +17,6 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     return next();
 });
-
-const setTotalSubscriber = () => {
-    fetch('http://localhost:4000/callback');
-};
 
 const discordCallback = () => {
     fetch('http://localhost:4000/discordCallback');
