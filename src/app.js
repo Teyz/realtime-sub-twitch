@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
 });
 
 const discordCallback = () => {
-    fetch('https://twitch-back/discordCallback');
+    fetch('https://twitch-back.teyz.fr/discordCallback');
 };
 
 function verifySignature(messageSignature, messageID, messageTimestamp, body) {
