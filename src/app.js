@@ -1,10 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const fetch = require('node-fetch');
-
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 2000;
