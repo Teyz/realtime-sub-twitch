@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
 });
 
 const discordCallback = () => {
-    fetch('http://localhost:4000/discordCallback');
+    fetch('http://localhost:1000/discordCallback');
 };
 
 function verifySignature(messageSignature, messageID, messageTimestamp, body) {
@@ -51,11 +51,11 @@ app.post("/webhooks/callback", async (req, res) => {
         discordCallback();
     }
 
-    if (type === 'channel.subscribe') {
-        setTotalSubscriber();
-    }
-
     res.status(200).end();
+});
+
+app.get('/test', function (req, res) {
+    res.send("prout");
 });
 
 const listener = app.listen(port, () => {
