@@ -1,12 +1,64 @@
 const express = require("express");
 const crypto = require("crypto");
 const fetch = require('node-fetch');
+const tmi = require('tmi.js');
+const token = require('./token.js');
+
 require('dotenv').config();
+
+/** Twitch Bot  */
+
+const options = {
+    options: {
+        debug: true
+    },
+    connection: {
+        reconnect: true
+    },
+    identity: {
+        username: token.bot_username,
+        password: token.password_oauth,
+    },
+    channels: [token.channels]
+};
+
+const client = new tmi.Client(options);
+
+client.on('message', onMessageHandler);
+client.on('connected', onConnectedHandler);
+
+client.connect();
+
+// Called every time a message comes in
+function onMessageHandler(target, context, msg, self) {
+    if (self) { return; } // Ignore messages from the bot
+
+    // Remove whitespace from chat message
+    const commandName = msg.trim();
+
+    if (commandName === '!discord') {
+        client.say(target, `N'hésite pas à rejoindre le discord : https://discord.gg/QSqPzC9MGF`);
+    } else {
+        console.log(`* Unknown command ${commandName}`);
+    }
+
+    if (commandName === '!twitter') {
+        client.say(target, `N'hésite pas à me follow sur twitter : https://twitter.com/FrTeyz`);
+    } else {
+        console.log(`* Unknown command ${commandName}`);
+    }
+}
+
+// Called every time the bot connects to Twitch chat
+function onConnectedHandler(addr, port) {
+    console.log(`* Connected to ${addr}:${port}`);
+}
+
+/** Twitch Bot  */
 
 const app = express();
 const port = process.env.PORT || 2000;
 const secret = process.env.SECRET;
-console.log(secret);
 
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,6 +70,10 @@ app.use(function (req, res, next) {
 
 const discordCallback = () => {
     fetch('https://twitch-back.teyz.fr/discordCallback');
+};
+
+const newFollower = (follower) => {
+    client.say('#teyz_', `Bienvenue sur le stream @${follower}`);
 };
 
 function verifySignature(messageSignature, messageID, messageTimestamp, body) {
@@ -40,13 +96,10 @@ app.post("/webhooks/callback", async (req, res) => {
     const { type } = req.body.subscription;
     const { event } = req.body;
 
-    console.log(
-        `Receiving ${type} request for ${event.broadcaster_user_name}: `,
-        event
-    );
-
     if (type === 'stream.online') {
         discordCallback();
+    } else if (type === 'channel.follow') {
+        newFollower(event.user_name);
     }
 
     res.status(200).end();
