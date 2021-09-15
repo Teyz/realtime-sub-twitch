@@ -1,0 +1,16 @@
+{
+  "0": "OneMonthLose",
+  "1": "OneMonthWin",
+  "2": "ThreeMonthLose",
+  "3": "ThreeMonthWin",
+  "4": "SixMonthLose",
+  "5": "SixMonthWin",
+  "6": "NineMonthLose",
+  "7": "NineMonthWin",
+  "8": "YearMonthLose",
+  "9": "YearMonthWin",
+  "10": "YearHalfMonthLose",
+  "11": "YearHalfMonthWin",
+  "12": "TwoYearMonthLose",
+  "13": "TwoYearMonthWin"
+}
