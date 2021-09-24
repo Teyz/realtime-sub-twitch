@@ -1,6 +1,14 @@
 const express = require("express");
 const crypto = require("crypto");
 const bodyParser = require('body-parser');
+const async = require('async');
+
+const queue = async.queue((task, completed) => {
+    setTimeout(() => {
+        const remaining = queue.length();
+        completed(null, { task, remaining });
+    }, 10000);
+}, 1);
 
 require('dotenv').config();
 const alertsData = require('../assets/alerts.json');
@@ -28,12 +36,16 @@ const isWin = () => {
 /* Set Alert Logic */
 
 const setAlert = (newSubData, eventType) => {
-    setTimeout(function () {
-        if (eventType === "channel.subscribe")
-            sendEventsToAll(setAlertBasicSub());
-        else
-            setAlertSubWithMonth(newSubData);
-    }, 10000);
+    queue.push(newSubData, (error, { item, remaining }) => {
+        if (error) {
+            console.log(`An error occurred while processing task ${task}`);
+        } else {
+            if (eventType === "channel.subscribe")
+                sendEventsToAll(setAlertBasicSub());
+            else
+                setAlertSubWithMonth(newSubData);
+        }
+    });
 };
 
 const setAlertBasicSub = () => {
