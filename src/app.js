@@ -28,11 +28,12 @@ const isWin = () => {
 /* Set Alert Logic */
 
 const setAlert = (newSubData, eventType) => {
-    setTimeout(function () { console.log("wait 10s"); }, 10000);
-    if (eventType === "channel.subscribe")
-        sendEventsToAll(setAlertBasicSub());
-    else
-        setAlertSubWithMonth(newSubData);
+    setTimeout(function () {
+        if (eventType === "channel.subscribe")
+            sendEventsToAll(setAlertBasicSub());
+        else
+            setAlertSubWithMonth(newSubData);
+    }, 10000);
 };
 
 const setAlertBasicSub = () => {
