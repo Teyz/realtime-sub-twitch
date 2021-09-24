@@ -1,6 +1,33 @@
 const express = require("express");
 const crypto = require("crypto");
 const bodyParser = require('body-parser');
+const fs = require('fs');
+
+const { StaticAuthProvider, RefreshingAuthProvider } = require('@twurple/auth');
+const { PubSubClient } = require('@twurple/pubsub');
+
+
+const clientId = '8c4qzcvzx01s2oekiyzszwurhc5sx9';
+const clientSecret = 'ijwtwcvryzu0zdsg8vcprym38c3s3f';
+
+const tokenData = fs.readFile('./src/token.json', 'utf8', (err, data) => {
+    if (err) {
+        console.error(err)
+        return
+    }
+    console.log(data)
+});
+
+const authProvider = new RefreshingAuthProvider({
+    clientId,
+    clientSecret,
+    onRefresh: async (newTokenData) => await fs.writeFile('token.json', JSON.stringify(newTokenData, null, 4), 'UTF-8')
+}, tokenData);
+const pubSubClient = new PubSubClient();
+const userId = pubSubClient.registerUserListener(authProvider);
+const listenerPubSub = pubSubClient.onSubscription(userId, (message) => {
+    console.log(`${message.userDisplayName} just subscribed!`);
+});
 
 require('dotenv').config();
 const alertsData = require('../assets/alerts.json');
