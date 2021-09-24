@@ -13,7 +13,6 @@ const secret = process.env.SECRET;
 let alertsEventsData = [];
 let events = [];
 
-
 /* Random Logics */
 
 const isWin = () => {
@@ -29,6 +28,7 @@ const isWin = () => {
 /* Set Alert Logic */
 
 const setAlert = (newSubData, eventType) => {
+    setTimeout(function () { console.log("wait 10s"); }, 10000);
     if (eventType === "channel.subscribe")
         sendEventsToAll(setAlertBasicSub());
     else
